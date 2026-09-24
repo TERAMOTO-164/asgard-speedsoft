@@ -2,949 +2,230 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia de Inspeção — Chases Premium Hot Wheels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Start & Cronômetro — Asgard Field</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#111316;
-    --panel:#1a1c20;
-    --panel-2:#212328;
-    --line:#33363c;
-    --line-soft:#2a2c31;
-    --paper:#eceae4;
-    --text:#eceae4;
-    --muted:#93969e;
-    --amber:#f2b705;
-    --amber-dim:#5a4a10;
-    --pass:#3ecf8e;
-    --pass-dim:#123529;
-    --flag:#ff5a3c;
-    --flag-dim:#3a1712;
-    --mono: 'IBM Plex Mono', monospace;
-    --disp: 'Oswald', sans-serif;
-    --body: 'Inter', sans-serif;
+    --bg:#14100D; --panel:#1B1611; --line:#3A2E22;
+    --red:#9E2B25; --gold:#D4A02A; --cream:#EDE3D0; --muted:#AEA290;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  html,body{height:100%;}
   body{
-    background:var(--ink);
-    color:var(--text);
-    font-family:var(--body);
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
+    margin:0; background:var(--bg); color:var(--cream);
+    font-family:'Oswald',sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100%;
   }
-  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+  .app{width:100%; max-width:480px; padding:28px 20px 40px; text-align:center;}
+  .eyebrow{color:var(--muted); font-size:13px; letter-spacing:.08em; margin:0 0 4px;}
+  h1{color:var(--gold); font-size:22px; font-weight:600; text-transform:uppercase; margin:0 0 26px;}
 
-  /* ---------- hazard stripe ---------- */
-  .hazard{
-    height:10px;
-    background:repeating-linear-gradient(135deg,var(--amber) 0 14px,#1a1a1a 14px 28px);
-    opacity:.9;
+  .durations{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:24px;}
+  .dur-btn{
+    background:var(--panel); border:1px solid var(--line); color:var(--cream);
+    font-family:'Oswald',sans-serif; font-size:14px; font-weight:500;
+    padding:12px 4px; border-radius:6px; cursor:pointer;
   }
+  .dur-btn.active{border-color:var(--gold); color:var(--gold); background:#241C13;}
+  .dur-btn:disabled{opacity:.45; cursor:default;}
 
-  /* ---------- hero ---------- */
-  header.hero{
-    padding:64px 0 40px;
-    border-bottom:1px solid var(--line);
-    position:relative;
+  .display{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:36px 20px; margin-bottom:22px;
   }
-  .case-tag{
-    font-family:var(--mono);
-    font-size:12px;
-    letter-spacing:.12em;
-    color:var(--amber);
-    text-transform:uppercase;
-    display:flex;
-    gap:10px;
-    align-items:center;
-    margin-bottom:22px;
-  }
-  .case-tag::before{
-    content:"";
-    width:8px;height:8px;
-    background:var(--amber);
-    display:inline-block;
-    border-radius:50%;
-  }
-  h1{
-    font-family:var(--disp);
-    font-weight:700;
-    font-size:clamp(34px,6vw,58px);
-    line-height:1.02;
-    letter-spacing:-.01em;
-    margin:0 0 18px;
-    text-transform:uppercase;
-  }
-  h1 .accent{color:var(--amber);}
-  .lede{
-    font-size:18px;
-    color:#c7c9cf;
-    max-width:640px;
-    margin:0 0 28px;
-  }
-  .stamp-row{display:flex;gap:12px;flex-wrap:wrap;}
-  .stamp{
-    font-family:var(--mono);
-    font-size:12px;
-    border:1px solid var(--line);
-    padding:8px 14px;
-    border-radius:3px;
-    color:var(--muted);
-  }
-  .stamp b{color:var(--text);font-weight:600;}
+  .status{color:var(--muted); font-size:14px; letter-spacing:.04em; text-transform:uppercase; margin:0 0 10px; min-height:18px;}
+  .digits{font-size:clamp(64px,20vw,96px); font-weight:700; color:var(--cream); line-height:1; letter-spacing:.01em;}
+  .digits.count{color:var(--red);}
+  .digits.warn{color:var(--gold);}
+  .digits.done{color:var(--red);}
 
-  /* ---------- sections generic ---------- */
-  section{padding:52px 0;border-bottom:1px solid var(--line-soft);}
-  .kicker{
-    font-family:var(--mono);
-    font-size:12px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--amber);
-    margin:0 0 10px;
+  .controls{display:flex; gap:12px; justify-content:center;}
+  button.main{
+    font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; text-transform:uppercase;
+    letter-spacing:.03em; padding:14px 30px; border-radius:8px; border:none; cursor:pointer;
   }
-  h2{
-    font-family:var(--disp);
-    font-size:clamp(24px,3.4vw,32px);
-    text-transform:uppercase;
-    letter-spacing:-.005em;
-    margin:0 0 16px;
-  }
-  p{color:#c7c9cf;margin:0 0 14px;}
-  .lead-p{font-size:16.5px;max-width:680px;}
-
-  /* ---------- intro two-track ---------- */
-  .tracks{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
-  @media(max-width:680px){.tracks{grid-template-columns:1fr;}}
-  .track{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:22px 22px 24px;
-  }
-  .track h3{
-    font-family:var(--disp);
-    font-size:16px;
-    letter-spacing:.02em;
-    text-transform:uppercase;
-    margin:0 0 10px;
-    display:flex;align-items:center;gap:8px;
-  }
-  .track.ok h3{color:var(--pass);}
-  .track.risk h3{color:var(--flag);}
-  .track p{font-size:14.5px;margin:0;color:#a9abb2;}
-
-  /* ---------- decoder ---------- */
-  .decoder{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:8px;
-    padding:28px;
-    margin-top:26px;
-  }
-  .decoder-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-  #codeInput{
-    font-family:var(--mono);
-    font-size:20px;
-    letter-spacing:.08em;
-    background:var(--panel-2);
-    border:1px solid var(--line);
-    color:var(--text);
-    border-radius:5px;
-    padding:12px 16px;
-    width:160px;
-    text-transform:uppercase;
-  }
-  #codeInput:focus{outline:none;border-color:var(--amber);}
-  #decodeBtn{
-    font-family:var(--mono);
-    font-size:13px;
-    letter-spacing:.06em;
-    text-transform:uppercase;
-    background:var(--amber);
-    color:#1a1408;
-    border:none;
-    border-radius:5px;
-    padding:14px 20px;
-    cursor:pointer;
-    font-weight:600;
-  }
-  #decodeBtn:hover{background:#ffc933;}
-  .decoder-hint{font-size:13px;color:var(--muted);margin:10px 0 0;}
-  #decodeResult{
-    margin-top:18px;
-    font-family:var(--mono);
-    font-size:14.5px;
-    min-height:20px;
-    color:var(--pass);
-  }
-  #decodeResult.bad{color:var(--flag);}
-  details.table-toggle{margin-top:22px;}
-  details.table-toggle summary{
-    cursor:pointer;
-    font-family:var(--mono);
-    font-size:12.5px;
-    color:var(--muted);
-    text-transform:uppercase;
-    letter-spacing:.06em;
-  }
-  .yeargrid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(72px,1fr));
-    gap:6px;
-    margin-top:14px;
-    font-family:var(--mono);
-    font-size:12px;
-  }
-  .yeargrid div{
-    background:var(--panel-2);
-    border:1px solid var(--line-soft);
-    border-radius:4px;
-    padding:6px 4px;
-    text-align:center;
-    color:#b7b9bf;
-  }
-  .yeargrid div b{color:var(--amber);}
-
-  /* ---------- checkpoints ---------- */
-  .cp-list{counter-reset:cp;margin-top:8px;}
-  .cp{
-    counter-increment:cp;
-    border-top:1px solid var(--line-soft);
-    padding:30px 0;
-    display:grid;
-    grid-template-columns:64px 1fr;
-    gap:22px;
-  }
-  .cp:first-child{border-top:none;}
-  @media(max-width:640px){.cp{grid-template-columns:44px 1fr;gap:14px;}}
-  .cp-num{
-    font-family:var(--disp);
-    font-size:34px;
-    color:var(--line);
-    line-height:1;
-  }
-  @media(max-width:640px){.cp-num{font-size:26px;}}
-  .cp h3{
-    font-family:var(--disp);
-    font-size:20px;
-    text-transform:uppercase;
-    margin:0 0 10px;
-    letter-spacing:-.005em;
-  }
-  .cp-body p{font-size:15px;margin:0 0 12px;}
-  .cp-flag{
-    background:var(--flag-dim);
-    border-left:3px solid var(--flag);
-    border-radius:0 4px 4px 0;
-    padding:10px 14px;
-    font-size:14px;
-    color:#ffb7a6;
-    margin:12px 0;
-  }
-  .cp-flag b{color:var(--flag);}
-  .cp-tip{
-    background:var(--pass-dim);
-    border-left:3px solid var(--pass);
-    border-radius:0 4px 4px 0;
-    padding:10px 14px;
-    font-size:14px;
-    color:#a9e8cd;
-  }
-  .cp-tip b{color:var(--pass);}
-
-  /* ---------- case study ---------- */
-  .case-study{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:8px;
-    padding:28px;
-    margin-top:10px;
-  }
-  .case-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
-  .case-head h3{font-family:var(--disp);font-size:19px;text-transform:uppercase;margin:0;}
-  .approved{
-    font-family:var(--mono);
-    font-size:12px;
-    letter-spacing:.08em;
-    color:var(--pass);
-    border:1px solid var(--pass);
-    padding:6px 12px;
-    border-radius:3px;
-    transform:rotate(-2deg);
-    text-transform:uppercase;
-  }
-  .case-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:14px;
-    font-family:var(--mono);
-    font-size:13px;
-  }
-  .case-grid div{border-top:1px solid var(--line-soft);padding-top:10px;}
-  .case-grid .k{color:var(--muted);display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
-  .case-grid .v{color:var(--text);}
-
-  /* ---------- checklist recap ---------- */
-  .recap{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:24px;
-  }
-  @media(max-width:600px){.recap{grid-template-columns:1fr;}}
-  .recap-item{
-    display:flex;
-    gap:12px;
-    align-items:flex-start;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:14px 16px;
-    cursor:pointer;
-    user-select:none;
-    transition:border-color .15s, background .15s;
-  }
-  .recap-item:hover{border-color:#4a4d55;}
-  .recap-item.checked{border-color:var(--pass);background:var(--pass-dim);}
-  .box{
-    width:18px;height:18px;flex:none;
-    border:1px solid var(--muted);
-    border-radius:3px;
-    margin-top:2px;
-    position:relative;
-  }
-  .recap-item.checked .box{border-color:var(--pass);background:var(--pass);}
-  .recap-item.checked .box::after{
-    content:"";
-    position:absolute;left:4px;top:0px;
-    width:5px;height:9px;
-    border:solid #0d1a15;
-    border-width:0 2px 2px 0;
-    transform:rotate(45deg);
-  }
-  .recap-item span{font-size:14px;color:#d6d7dc;}
-  .recap-item.checked span{color:#c7ecd9;}
-
-  /* ---------- footer ---------- */
-  footer{padding:40px 0 60px;}
-  footer p{font-size:13.5px;color:var(--muted);max-width:640px;}
-  .signature{
-    font-family:var(--mono);
-    font-size:12px;
-    color:#54565d;
-    margin-top:22px;
-    letter-spacing:.04em;
-  }
-
-  /* ---------- language switch ---------- */
-  .lang-switch{
-    position:fixed;
-    top:18px;right:18px;
-    z-index:50;
-    display:flex;
-    gap:2px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:7px;
-    padding:3px;
-    box-shadow:0 4px 16px rgba(0,0,0,.35);
-  }
-  .lang-btn{
-    font-family:var(--mono);
-    font-size:11px;
-    letter-spacing:.06em;
-    background:transparent;
-    border:none;
-    color:var(--muted);
-    padding:7px 12px;
-    border-radius:4px;
-    cursor:pointer;
-    text-transform:uppercase;
-  }
-  .lang-btn:hover{color:var(--text);}
-  .lang-btn.active{background:var(--amber);color:#1a1408;font-weight:600;}
-  body.lang-en .lang-pt{display:none;}
-  body:not(.lang-en) .lang-en{display:none;}
-  @media(max-width:640px){.lang-switch{top:10px;right:10px;}}
-
-  /* ---------- database section ---------- */
-  .db-controls{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 16px;}
-  #dbSearch{
-    font-family:var(--mono);
-    font-size:13px;
-    background:var(--panel-2);
-    border:1px solid var(--line);
-    color:var(--text);
-    border-radius:5px;
-    padding:11px 14px;
-    flex:1;
-    min-width:200px;
-  }
-  #dbSearch::placeholder{color:var(--muted);}
-  #dbSearch:focus{outline:none;border-color:var(--amber);}
-  .db-year-pills{display:flex;gap:6px;flex-wrap:wrap;}
-  .db-pill{
-    font-family:var(--mono);
-    font-size:12px;
-    background:var(--panel-2);
-    border:1px solid var(--line);
-    color:var(--muted);
-    padding:9px 13px;
-    border-radius:5px;
-    cursor:pointer;
-  }
-  .db-pill:hover{border-color:#4a4d55;color:var(--text);}
-  .db-pill.active{border-color:var(--amber);color:var(--amber);}
-  .db-count{
-    font-family:var(--mono);
-    font-size:12px;
-    color:var(--muted);
-    margin:0 0 14px;
-  }
-  .db-table-wrap{
-    overflow-x:auto;
-    border:1px solid var(--line);
-    border-radius:8px;
-  }
-  table.db-table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px;}
-  .db-table th{
-    font-family:var(--mono);
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:var(--muted);
-    text-align:left;
-    padding:12px 14px;
-    background:var(--panel-2);
-    border-bottom:1px solid var(--line);
-    white-space:nowrap;
-  }
-  .db-table td{padding:12px 14px;border-bottom:1px solid var(--line-soft);color:#d6d7dc;vertical-align:top;}
-  .db-table tr:last-child td{border-bottom:none;}
-  .db-table tr:hover td{background:var(--panel);}
-  .db-code{font-family:var(--mono);color:var(--amber);font-weight:600;letter-spacing:.03em;}
-  .db-note{font-size:11.5px;color:var(--flag);display:inline-block;margin-top:3px;}
-  .db-empty{padding:30px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px;}
-  .db-scope{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:16px 18px;
-    margin-top:18px;
-    font-size:13px;
-    color:#a9abb2;
-  }
-  .db-scope b{color:var(--text);}
-  .correction-note{
-    background:var(--amber-dim);
-    border-left:3px solid var(--amber);
-    border-radius:0 4px 4px 0;
-    padding:12px 16px;
-    margin-top:18px;
-    font-size:13.5px;
-    color:#ffe3a3;
-  }
-  .correction-note b{color:var(--amber);}
+  .btn-start{background:var(--gold); color:#1B1611;}
+  .btn-cancel{background:transparent; color:var(--red); border:1px solid var(--red) !important;}
+  .hidden{display:none !important;}
 </style>
 </head>
 <body>
+<div class="app">
+  <p class="eyebrow">Asgard Field</p>
+  <h1>Start &amp; Cronômetro</h1>
 
-<div class="hazard"></div>
+  <div class="durations" id="durations">
+    <button class="dur-btn active" data-ms="0">Só o start</button>
+    <button class="dur-btn" data-ms="180000">3 min</button>
+    <button class="dur-btn" data-ms="300000">5 min</button>
+    <button class="dur-btn" data-ms="600000">10 min</button>
+  </div>
 
-<div class="lang-switch">
-  <button class="lang-btn active" data-lang="pt" onclick="setLang('pt')">PT-BR</button>
-  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-</div>
+  <div class="display">
+    <p class="status" id="status">Pronto para iniciar</p>
+    <div class="digits" id="digits">PRONTO</div>
+  </div>
 
-<div class="wrap">
-
-  <header class="hero">
-    <div class="case-tag">
-      <span class="lang-pt">RELATÓRIO DE INSPEÇÃO · USO PESSOAL DO COLECIONADOR</span>
-      <span class="lang-en">INSPECTION REPORT · FOR PERSONAL COLLECTOR USE</span>
-    </div>
-    <h1>
-      <span class="lang-pt">Chase é raro.<br><span class="accent">Nem tudo que parece</span><br>é chase.</span>
-      <span class="lang-en">Chase is rare.<br><span class="accent">Not everything that looks like it</span><br>is a chase.</span>
-    </h1>
-    <p class="lede">
-      <span class="lang-pt">Checklist técnico para inspecionar Premium/Car Culture chase (0/5), STH e RLC antes de confirmar uma compra — construído a partir da investigação da sua LB-ER34 Super Silhouette, agora com um banco de dados de chases 0/5 documentados desde 2022.</span>
-      <span class="lang-en">Technical checklist for inspecting Premium/Car Culture chase (0/5), STH and RLC pieces before confirming a purchase — built from the investigation of your LB-ER34 Super Silhouette, now with a database of 0/5 chases documented since 2022.</span>
-    </p>
-    <div class="stamp-row">
-      <div class="stamp"><span class="lang-pt">Peça de referência:</span><span class="lang-en">Reference piece:</span> <b>LB-ER34 R11</b></div>
-      <div class="stamp"><span class="lang-pt">Checkpoints:</span><span class="lang-en">Checkpoints:</span> <b>09</b></div>
-      <div class="stamp"><span class="lang-pt">Chases catalogados:</span><span class="lang-en">Chases catalogued:</span> <b>35 (2022–2026)</b></div>
-      <div class="stamp"><span class="lang-pt">Base:</span><span class="lang-en">Source:</span> <b><span class="lang-pt">comunidade + fichas técnicas</span><span class="lang-en">community + spec sheets</span></b></div>
-    </div>
-  </header>
-
-  <section id="intro">
-    <div class="kicker"><span class="lang-pt">Antes de tudo</span><span class="lang-en">Before anything else</span></div>
-    <h2><span class="lang-pt">Dois mercados, uma etiqueta</span><span class="lang-en">Two markets, one label</span></h2>
-    <p class="lead-p">
-      <span class="lang-pt">"Custom chase" não é sinônimo de golpe. É um hobby real dentro do colecionismo de diecast. O risco não está na existência da peça — está em como ela é <em>vendida</em>.</span>
-      <span class="lang-en">"Custom chase" isn't a synonym for a scam. It's a real hobby within diecast collecting. The risk isn't in the piece's existence — it's in how it's <em>sold</em>.</span>
-    </p>
-    <div class="tracks">
-      <div class="track ok">
-        <h3><span class="lang-pt">✓ Custom declarado</span><span class="lang-en">✓ Declared custom</span></h3>
-        <p>
-          <span class="lang-pt">Vendedor informa claramente "custom", "recriação" ou "fantasy" no título/descrição. Preço geralmente bem abaixo do valor da chase genuína. Hobby legítimo — sem tentativa de disfarce.</span>
-          <span class="lang-en">Seller clearly states "custom," "recreation," or "fantasy" in the title/description. Price is usually well below the genuine chase's value. Legitimate hobby — no attempt to disguise it.</span>
-        </p>
-      </div>
-      <div class="track risk">
-        <h3><span class="lang-pt">⚠ Revenda enganosa</span><span class="lang-en">⚠ Misleading resale</span></h3>
-        <p>
-          <span class="lang-pt">Mesma técnica, mas sem aviso. Fotos ambíguas, descrição vaga tipo "achado raro", preço colado no valor de mercado da peça real. Aqui mora o problema.</span>
-          <span class="lang-en">Same technique, but with no disclosure. Ambiguous photos, a vague description like "rare find," a price glued to the real piece's market value. This is where the problem lives.</span>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="decoder">
-    <div class="kicker"><span class="lang-pt">Checkpoint 01 · Ferramenta</span><span class="lang-en">Checkpoint 01 · Tool</span></div>
-    <h2><span class="lang-pt">Decodificador de código de base</span><span class="lang-en">Base code decoder</span></h2>
-    <p class="lead-p">
-      <span class="lang-pt">Todo Hot Wheels feito na Tailândia, Malásia ou Indonésia desde 2008 traz um código letra + semana na base. Digite o código (ex.: R11) pra ver o ano e a janela de produção aproximada.</span>
-      <span class="lang-en">Every Hot Wheels made in Thailand, Malaysia, or Indonesia since 2008 carries a letter + week code on the base. Type the code (e.g., R11) to see the year and approximate production window.</span>
-    </p>
-    <div class="decoder">
-      <div class="decoder-top">
-        <input type="text" id="codeInput" placeholder="R11" maxlength="4">
-        <button id="decodeBtn" onclick="decode()"><span class="lang-pt">DECODIFICAR</span><span class="lang-en">DECODE</span></button>
-      </div>
-      <p class="decoder-hint">
-        <span class="lang-pt">Formato: 1 letra + 2 dígitos (semana 01–53). As letras I, O e Q não são usadas.</span>
-        <span class="lang-en">Format: 1 letter + 2 digits (week 01–53). Letters I, O, and Q aren't used.</span>
-      </p>
-      <div id="decodeResult"></div>
-      <details class="table-toggle">
-        <summary><span class="lang-pt">Ver tabela completa letra → ano</span><span class="lang-en">View full letter → year table</span></summary>
-        <div class="yeargrid" id="yearGrid"></div>
-      </details>
-    </div>
-  </section>
-
-  <section id="checkpoints">
-    <div class="kicker"><span class="lang-pt">Checkpoints 02–08</span><span class="lang-en">Checkpoints 02–08</span></div>
-    <h2><span class="lang-pt">Os sete pontos de inspeção física</span><span class="lang-en">The seven physical inspection points</span></h2>
-
-    <div class="cp-list">
-
-      <div class="cp">
-        <div class="cp-num">02</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Código de base × ano de lançamento</span><span class="lang-en">Base code × release year</span></h3>
-          <p>
-            <span class="lang-pt">O código encontrado precisa caber numa janela plausível: mesmo ano do lançamento oficial do set, ou o ano anterior (produção começa meses antes da peça chegar à loja).</span>
-            <span class="lang-en">The code found needs to fit a plausible window: the same year as the set's official release, or the year before (production starts months before the piece reaches stores).</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> código de ano posterior ao lançamento oficial — fisicamente impossível numa peça genuína daquela série.</span>
-            <span class="lang-en"><b>Red flag:</b> a code from a year later than the official release — physically impossible on a genuine piece from that series.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> anote os códigos que outros colecionadores já documentaram pra aquele casting. Achar um código "novo" dentro da mesma janela de ano não é problema — só significa outro lote de produção.</span>
-            <span class="lang-en"><b>Tip:</b> note down the codes other collectors have already documented for that casting. Finding a "new" code within the same year window isn't a problem — it just means another production batch.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cp">
-        <div class="cp-num">03</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Precisão do tampo (impressão)</span><span class="lang-en">Tampo (print) precision</span></h3>
-          <p>
-            <span class="lang-pt">A tampografia de fábrica é extremamente fina, com registro de cor perfeito e bordas nítidas mesmo sob lupa.</span>
-            <span class="lang-en">Factory tampography is extremely fine, with perfect color registration and sharp edges even under a loupe.</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> bordas com leve borrão, textura de decalque perceptível ao inclinar sob luz direta, cores levemente fora de posição, ou camada de tinta com espessura diferente do resto da carroceria.</span>
-            <span class="lang-en"><b>Red flag:</b> slightly blurred edges, a perceptible decal texture when tilted under direct light, colors slightly out of register, or a paint layer with a different thickness than the rest of the body.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> compare lado a lado com fotos em alta resolução de exemplares confirmados em collecthw.com, HWTreasure ou hobbyDB.</span>
-            <span class="lang-en"><b>Tip:</b> compare side by side with high-resolution photos of confirmed examples on collecthw.com, HWTreasure, or hobbyDB.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cp">
-        <div class="cp-num">04</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Rebite de fábrica × parafuso</span><span class="lang-en">Factory rivet × screw</span></h3>
-          <p>
-            <span class="lang-pt">A Mattel monta a base na carroceria com rebite prensado — nunca com parafuso. Pra abrir a peça e repintar/decalcar, o customizador precisa furar o rebite original, o que o destrói.</span>
-            <span class="lang-en">Mattel attaches the base to the body with a pressed rivet — never a screw. To open the piece and repaint/decal it, a customizer has to drill out the original rivet, which destroys it.</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> qualquer parafuso visível na base (Allen/hex é o mais comum, mas também aparece Phillips) — prova quase definitiva de que a peça foi aberta e remontada em algum momento.</span>
-            <span class="lang-en"><b>Red flag:</b> any visible screw on the base (Allen/hex is most common, but Phillips also shows up) — near-definitive proof the piece was opened and reassembled at some point.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> rebite intacto é bom sinal, mas não é prova absoluta sozinho — existem técnicas avançadas de remontagem que imitam a aparência de fábrica. Sempre cruze com os outros checkpoints.</span>
-            <span class="lang-en"><b>Tip:</b> an intact rivet is a good sign, but it isn't absolute proof on its own — advanced reassembly techniques exist that mimic the factory look. Always cross-check with the other checkpoints.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cp">
-        <div class="cp-num">05</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Rodas (Real Riders)</span><span class="lang-en">Wheels (Real Riders)</span></h3>
-          <p>
-            <span class="lang-pt">Cada chase tem um tipo de roda específico e documentado — perfil, número de raios, composto do pneu.</span>
-            <span class="lang-en">Each chase has a specific, documented wheel type — profile, spoke count, tire compound.</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> roda de outro casting encaixada ("wheel swap") — repare no desenho do raio, no encaixe do cubo e na textura do pneu contra a ficha oficial.</span>
-            <span class="lang-en"><b>Red flag:</b> a wheel from another casting fitted on (a "wheel swap") — check the spoke design, hub fit, and tire texture against the official spec sheet.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> o tipo exato de roda quase sempre está listado na ficha técnica do casting (ex.: "RR5SPM", "Black RR5SPM").</span>
-            <span class="lang-en"><b>Tip:</b> the exact wheel type is almost always listed in the casting's spec sheet (e.g., "RR5SPM," "Black RR5SPM").</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cp">
-        <div class="cp-num">06</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Embalagem / blister</span><span class="lang-en">Packaging / blister</span></h3>
-          <p>
-            <span class="lang-pt">Uma peça genuína lacrada de fábrica tem bolha colada com precisão industrial e cartela cortada de forma padronizada.</span>
-            <span class="lang-en">A genuine factory-sealed piece has a bubble glued with industrial precision and a card cut to a standardized shape.</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> bolha afundada ou com cola visível nas bordas, corte de cartela desalinhado, cantos com sinal de reabertura.</span>
-            <span class="lang-en"><b>Red flag:</b> a sunken bubble or visible glue at the edges, a misaligned card cut, corners showing signs of reopening.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> peça fotos do verso e das bordas da cartela antes de comprar — não só da frente.</span>
-            <span class="lang-en"><b>Tip:</b> ask for photos of the back and the card edges before buying — not just the front.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cp">
-        <div class="cp-num">07</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Preço e histórico do vendedor</span><span class="lang-en">Price and seller history</span></h3>
-          <p>
-            <span class="lang-pt">Uma chase 0/5 genuína raramente sai barata — o mercado secundário costuma precificar bem a raridade real.</span>
-            <span class="lang-en">A genuine 0/5 chase rarely sells cheap — the secondary market tends to price real rarity fairly accurately.</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> preço "bom demais" sem explicação, ou preço colado no valor de mercado real vindo de um vendedor sem histórico e sem provas de procedência.</span>
-            <span class="lang-en"><b>Red flag:</b> a "too good" price with no explanation, or a price glued to real market value coming from a seller with no history and no proof of provenance.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> vendedor que já anuncia customs abertamente em outros itens não é red flag — geralmente é sinal de transparência, não de golpe.</span>
-            <span class="lang-en"><b>Tip:</b> a seller who already lists customs openly on other items isn't a red flag — it's usually a sign of transparency, not a scam.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cp">
-        <div class="cp-num">08</div>
-        <div class="cp-body">
-          <h3><span class="lang-pt">Cruzamento com bases de dados da comunidade</span><span class="lang-en">Cross-checking community databases</span></h3>
-          <p>
-            <span class="lang-pt">Nenhum checkpoint isolado é definitivo — a força está em cruzar vários ao mesmo tempo.</span>
-            <span class="lang-en">No single checkpoint is definitive on its own — the strength is in cross-checking several at once.</span>
-          </p>
-          <div class="cp-flag">
-            <span class="lang-pt"><b>Sinal de alerta:</b> especificações que não batem com nenhuma fonte confiável (tampo, país de fabricação, tipo de base) para aquele casting/ano.</span>
-            <span class="lang-en"><b>Red flag:</b> specs that don't match any reliable source (tampo, country of manufacture, base type) for that casting/year.</span>
-          </div>
-          <div class="cp-tip">
-            <span class="lang-pt"><b>Dica:</b> Fandom Hot Wheels Wiki, collecthw.com, HWTreasure e hobbyDB — comparar pelo menos duas fontes antes de fechar negócio. Veja também o Checkpoint 09, com o banco de dados de chases 0/5 deste guia.</span>
-            <span class="lang-en"><b>Tip:</b> Hot Wheels Wiki (Fandom), collecthw.com, HWTreasure, and hobbyDB — compare at least two sources before closing a deal. See also Checkpoint 09, with this guide's 0/5 chase database.</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="database">
-    <div class="kicker"><span class="lang-pt">Checkpoint 09 · Referência</span><span class="lang-en">Checkpoint 09 · Reference</span></div>
-    <h2><span class="lang-pt">Banco de dados: chases 0/5 documentados</span><span class="lang-en">Database: documented 0/5 chases</span></h2>
-    <p class="lead-p">
-      <span class="lang-pt">Todo chase 0/5 catalogado da linha principal Car Culture, do início do formato em 2022 até hoje, com o código de coleção (SKU) de cada peça — o número que sai na cartela/blister, diferente do código de base (data) decodificado no Checkpoint 01. Use pra cruzar com o Checkpoint 08.</span>
-      <span class="lang-en">Every catalogued 0/5 chase from the main Car Culture line, from the format's start in 2022 up to today, with each piece's collector code (SKU) — the number printed on the card/blister, different from the base (date) code decoded in Checkpoint 01. Use it to cross-check Checkpoint 08.</span>
-    </p>
-
-    <div class="db-controls">
-      <input type="text" id="dbSearch" placeholder="Buscar modelo, série ou código…" oninput="renderDatabase()">
-      <div class="db-year-pills" id="dbYearPills"></div>
-    </div>
-    <p class="db-count" id="dbCount"></p>
-    <div class="db-table-wrap">
-      <table class="db-table">
-        <thead>
-          <tr>
-            <th><span class="lang-pt">Ano</span><span class="lang-en">Year</span></th>
-            <th><span class="lang-pt">Série Car Culture</span><span class="lang-en">Car Culture series</span></th>
-            <th><span class="lang-pt">Modelo</span><span class="lang-en">Model</span></th>
-            <th><span class="lang-pt">Código HW</span><span class="lang-en">HW code</span></th>
-            <th><span class="lang-pt">Cor do chase</span><span class="lang-en">Chase color</span></th>
-          </tr>
-        </thead>
-        <tbody id="dbBody"></tbody>
-      </table>
-    </div>
-
-    <div class="db-scope">
-      <b><span class="lang-pt">Escopo e fontes.</span><span class="lang-en">Scope and sources.</span></b>
-      <span class="lang-pt"> Cobre especificamente os chases 0/5 da linha principal Car Culture (o formato numerado 1/5–5/5 + chase, introduzido em 2022). Chases de outras linhas Premium — Boulevard, Fast &amp; Furious Premium, Team Transport — usam numeração e nomenclatura diferentes e não entram nesta lista. Levantado a partir de hwtreasure.com/category/chase-cars e Wheels Ministry (sdrock.com) em agosto de 2026. Não é uma lista oficial da Mattel: são registros da comunidade, então pode existir lançamento ainda não documentado, e a coluna "cor do chase" reflete o resumo público de cada fonte. Confira sempre a peça física e o link da fonte original antes de fechar negócio.</span>
-      <span class="lang-en"> Covers specifically the 0/5 chases from the main Car Culture line (the numbered 1/5–5/5 + chase format, introduced in 2022). Chases from other Premium lines — Boulevard, Fast &amp; Furious Premium, Team Transport — use different numbering and naming and aren't included in this list. Compiled from hwtreasure.com/category/chase-cars and Wheels Ministry (sdrock.com) as of August 2026. This isn't an official Mattel list: it's community-tracked, so an undocumented release may exist, and the "chase color" column reflects each source's public summary. Always check the physical piece and the original source link before closing a deal.</span>
-    </div>
-  </section>
-
-  <section id="case">
-    <div class="kicker"><span class="lang-pt">Exemplo aplicado</span><span class="lang-en">Applied example</span></div>
-    <h2><span class="lang-pt">Estudo de caso: sua LB-ER34</span><span class="lang-en">Case study: your LB-ER34</span></h2>
-    <div class="case-study">
-      <div class="case-head">
-        <h3>Mountain Drifters Chase 0/5 — Nissan LB-ER34 Super Silhouette</h3>
-        <div class="approved"><span class="lang-pt">Checklist consistente</span><span class="lang-en">Consistent checklist</span></div>
-      </div>
-      <div class="case-grid">
-        <div><span class="k"><span class="lang-pt">Código de base</span><span class="lang-en">Base code</span></span><span class="v">R11 → <span class="lang-pt">semana 11 / 2022</span><span class="lang-en">week 11 / 2022</span></span></div>
-        <div><span class="k"><span class="lang-pt">Janela oficial</span><span class="lang-en">Official window</span></span><span class="v">R10 / R13 / R34 <span class="lang-pt">documentados</span><span class="lang-en">documented</span></span></div>
-        <div><span class="k"><span class="lang-pt">Código HW (SKU)</span><span class="lang-en">HW code (SKU)</span></span><span class="v">HCK01 <span class="lang-pt">— Mark Jones</span><span class="lang-en">— Mark Jones</span></span></div>
-        <div><span class="k"><span class="lang-pt">País</span><span class="lang-en">Country</span></span><span class="v">Made in Thailand</span></div>
-        <div><span class="k"><span class="lang-pt">Fixação</span><span class="lang-en">Fastening</span></span><span class="v"><span class="lang-pt">Rebite de fábrica — sem parafuso</span><span class="lang-en">Factory rivet — no screw</span></span></div>
-        <div><span class="k"><span class="lang-pt">Duas unidades</span><span class="lang-en">Two units</span></span><span class="v"><span class="lang-pt">Mesmo código em coleções distintas</span><span class="lang-en">Same code across separate collections</span></span></div>
-      </div>
-      <div class="correction-note">
-        <span class="lang-pt"><b>Nota de conferência:</b> hwtreasure.com e a Wheels Ministry (sdrock.com) registram o código HW deste chase como <b>HCK01</b>, não HCJ81 — atualizamos o campo acima com base nessas duas fontes independentes. Vale confirmar contra a cartela/blister da sua própria peça: o HCJ81 pode ter vindo de outra fonte ou de confusão com o código de um dos exemplares numerados (1/5–5/5) do mesmo set.</span>
-        <span class="lang-en"><b>Verification note:</b> hwtreasure.com and Wheels Ministry (sdrock.com) record this chase's HW code as <b>HCK01</b>, not HCJ81 — we've updated the field above based on these two independent sources. Worth confirming against your own piece's card/blister: HCJ81 may have come from another source or been confused with the code of one of the numbered (1/5–5/5) pieces in the same set.</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="recap">
-    <div class="kicker"><span class="lang-pt">Antes de fechar a compra</span><span class="lang-en">Before closing the purchase</span></div>
-    <h2><span class="lang-pt">Checklist rápido</span><span class="lang-en">Quick checklist</span></h2>
-    <p class="lead-p"><span class="lang-pt">Clique pra marcar conforme for checando (não salva entre sessões — é só pra usar durante a inspeção).</span><span class="lang-en">Click to check off as you go (doesn't save between sessions — it's just for use during the inspection).</span></p>
-    <div class="recap" id="recapList">
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Código de base cabe na janela do ano de lançamento</span><span class="lang-en">Base code fits the release year window</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Tampo nítido, sem borrão nem textura de decalque</span><span class="lang-en">Sharp tampo, no blur or decal texture</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Base fixada com rebite, sem parafuso visível</span><span class="lang-en">Base fastened with a rivet, no visible screw</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Roda bate com a ficha técnica oficial</span><span class="lang-en">Wheel matches the official spec sheet</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Blister sem sinal de reabertura</span><span class="lang-en">Blister shows no sign of reopening</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Preço coerente com o histórico e o vendedor</span><span class="lang-en">Price consistent with history and seller</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Especificações conferidas em 2+ fontes da comunidade</span><span class="lang-en">Specs checked against 2+ community sources</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Fotos extras pedidas direto ao vendedor</span><span class="lang-en">Extra photos requested directly from the seller</span></span></div>
-      <div class="recap-item" onclick="toggle(this)"><div class="box"></div><span><span class="lang-pt">Código HW conferido no banco de dados do Checkpoint 09</span><span class="lang-en">HW code checked against the Checkpoint 09 database</span></span></div>
-    </div>
-  </section>
-
-  <footer>
-    <p>
-      <span class="lang-pt">Nenhum checkpoint isolado prova autenticidade sozinho — quanto mais pontos baterem juntos, maior a confiança. Este guia reflete o conhecimento reunido até agora sobre chases premium, incluindo o banco de dados de chases 0/5 documentados; técnicas de customização evoluem, então vale sempre cruzar com discussões recentes da comunidade antes de decisões de alto valor.</span>
-      <span class="lang-en">No single checkpoint proves authenticity on its own — the more points line up together, the higher the confidence. This guide reflects the knowledge gathered so far about premium chases, including the database of documented 0/5 chases; customization techniques evolve, so it's always worth cross-checking recent community discussions before high-value decisions.</span>
-    </p>
-    <div class="signature"><span class="lang-pt">Compilado a partir da inspeção da LB-ER34 Super Silhouette Nissan Skyline · Mountain Drifters 2022 · Banco de dados atualizado em agosto de 2026</span><span class="lang-en">Compiled from the inspection of the LB-ER34 Super Silhouette Nissan Skyline · Mountain Drifters 2022 · Database updated August 2026</span></div>
-  </footer>
-
+  <div class="controls">
+    <button class="main btn-start" id="startBtn">Iniciar</button>
+    <button class="main btn-cancel hidden" id="cancelBtn">Cancelar</button>
+  </div>
 </div>
 
 <script>
-  let CURRENT_LANG = 'pt';
-
-  const YEAR_MAP = {A:2008,B:2009,C:2010,D:2011,E:2012,F:2013,G:2014,H:2015,J:2016,K:2017,L:2018,M:2019,N:2020,P:2021,R:2022,S:2023,T:2024,U:2025,V:2026,W:2027,X:2028,Y:2029,Z:2030};
-
-  function buildGrid(){
-    const grid = document.getElementById('yearGrid');
-    grid.innerHTML = '';
-    Object.entries(YEAR_MAP).forEach(([letter,year])=>{
-      const d = document.createElement('div');
-      d.innerHTML = '<b>'+letter+'</b><br>'+year;
-      grid.appendChild(d);
-    });
-  }
-  buildGrid();
-
-  const MONTHS = {
-    pt:['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],
-    en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  // Áudio real do start (fala "10 seconds" + 9 beeps + sinal final).
+  // Tempos em segundos dentro do arquivo start.mp3. Ajuste aqui se trocar o áudio.
+  const startAudio = new Audio('start.mp3');
+  startAudio.preload = 'auto';
+  const CUES = {
+    beeps: [1.18, 2.195, 3.215, 4.22, 5.22, 6.245, 7.245, 8.27, 9.27], // 9 -> 1
+    horn: 10.295 // sinal final: fim da contagem / início do cronômetro
   };
 
-  function weekToDate(year, week){
-    const jan1 = new Date(year,0,1);
-    const approx = new Date(jan1.getTime() + (week-1)*7*24*60*60*1000);
-    return MONTHS[CURRENT_LANG][approx.getMonth()] + '/' + approx.getFullYear();
+  let audioCtx = null;
+  function ac(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+
+  function tone(freq, dur, type, gainVal, delay){
+    const ctx = ac();
+    const t0 = ctx.currentTime + (delay||0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0, t0);
+    gain.gain.linearRampToValueAtTime(gainVal||0.3, t0+0.01);
+    gain.gain.linearRampToValueAtTime(0, t0+dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t0); osc.stop(t0+dur+0.02);
   }
+  function warnTone(){ tone(1400,0.18,'square',0.25,0); tone(1400,0.18,'square',0.25,0.25); }
+  function buzzer(){ tone(160,0.5,'sawtooth',0.35,0); tone(160,0.5,'sawtooth',0.35,0.6); }
 
-  const DECODE_STR = {
-    pt:{
-      badFormat:'Código não reconhecido — confira o formato (ex.: R11) ou pode ser anterior a 2008.',
-      badWeek:'Semana fora do intervalo válido (01–53).',
-      result:(year,week,date)=> '→ Ano <b>'+year+'</b> · Semana <b>'+week+'</b> · Produção aproximada: <b>'+date+'</b>'
-    },
-    en:{
-      badFormat:'Code not recognized — check the format (e.g., R11), or it may predate 2008.',
-      badWeek:'Week outside the valid range (01–53).',
-      result:(year,week,date)=> '→ Year <b>'+year+'</b> · Week <b>'+week+'</b> · Approx. production: <b>'+date+'</b>'
-    }
-  };
-
-  function decode(){
-    const raw = document.getElementById('codeInput').value.trim().toUpperCase();
-    const result = document.getElementById('decodeResult');
-    const S = DECODE_STR[CURRENT_LANG];
-    const match = raw.match(/^([A-Z])(\d{1,2})[A-Z]?$/);
-    if(!match || !YEAR_MAP[match[1]]){
-      result.className = 'bad';
-      result.textContent = raw ? S.badFormat : '';
-      return;
-    }
-    const letter = match[1];
-    const week = parseInt(match[2],10);
-    const year = YEAR_MAP[letter];
-    if(week < 1 || week > 53){
-      result.className = 'bad';
-      result.textContent = S.badWeek;
-      return;
-    }
-    result.className = '';
-    result.innerHTML = S.result(year, week, weekToDate(year,week));
-  }
-
-  document.getElementById('codeInput').addEventListener('keydown', e=>{
-    if(e.key === 'Enter') decode();
-  });
-
-  function toggle(el){
-    el.classList.toggle('checked');
-  }
-
-  /* ---------- Banco de dados: chases 0/5 Car Culture (2022–2026) ---------- */
-  /* Fontes: hwtreasure.com/category/chase-cars · Wheels Ministry (sdrock.com) · levantamento ago/2026 */
-  const CHASE_DB = [
-    {year:2026, series:'Thrill Climbers', model:`'55 Chevy Bel Air Gasser`, code:'JKF27', color:{pt:'Dourado', en:'Gold'}},
-    {year:2026, series:'Power Trip', model:`'92 BMW M3`, code:'JKF32', color:{pt:'Dourado', en:'Gold'}},
-    {year:2026, series:'Japan Historics 5', model:'Datsun 510 Wagon', code:'JKF14', color:{pt:'Dourado, friso duplo e logo 10 anos Car Culture', en:'Gold, double stripe and Car Culture 10th Anniv. logo'}},
-    {year:2026, series:'Aero Styles', model:'LB-ER34 Super Silhouette Nissan Skyline', code:'JKF36', color:{pt:'Dourado, emblemas autênticos, logo 10 anos Car Culture', en:'Gold, authentic emblems, Car Culture 10th Anniversary logo'}},
-    {year:2026, series:'Modern Classics', model:'Mercedes-Benz 190 E 2.5-16 Evo II', code:'JKF18', color:{pt:'Dourado', en:'Gold'}},
-    {year:2026, series:'Vintage Racing', model:'Nissan Skyline GT-R (BNR32)', code:'JKF23', color:{pt:'Dourado', en:'Gold'}},
-
-    {year:2025, series:'Ronin Run II', model:`'07 Honda Civic Type R`, code:'JBK89', color:{pt:'Preto, plaqueta "HYPE R"', en:'Black, "HYPE R" license plate'}},
-    {year:2025, series:'HW Off Road', model:'2024 Toyota Land Cruiser', code:'JBK75', color:{pt:'Preto, emblemas Toyota/Land Cruiser', en:'Black, Toyota/Land Cruiser emblems'}},
-    {year:2025, series:'Fast Wagons', model:'Audi RS 6 Avant', code:'JBK71', color:{pt:'Preto', en:'Black'}},
-    {year:2025, series:'Eurospeed', model:'Bugatti Bolide', code:'JBK80', color:{pt:'Preto, detalhe vermelho na lanterna', en:'Black, red taillight accent'}},
-    {year:2025, series:'Circuit Legends', model:'Ferrari 499P', code:'JBK66', color:{pt:'Preto', en:'Black'}},
-    {year:2025, series:'Hammer Drop', model:'Lancia Stratos Zero', code:'HRW10', color:{pt:'Preto', en:'Black'}},
-    {year:2025, series:'Silhouettes', model:'LB-WORKS McLaren 720S', code:'JBK62', color:{pt:'Preto', en:'Black'}},
-    {year:2025, series:'Timeless Icons', model:'Nissan Skyline GT-R V·Spec II (BNR34)', code:'JBK94', color:{pt:'Preto, plaqueta "V·SSII"', en:'Black, "V·SSII" license plate'}},
-
-    {year:2024, series:'Slide Street 2', model:'2023 Toyota GR Corolla', code:'HKC87', color:{pt:'Preto, logos Toyota', en:'Black, Toyota logos'}},
-    {year:2024, series:'Japan Historics 4', model:`'64 Prince Skyline GT`, code:'HRV87', color:{pt:'Preto, frisos e logos autênticos', en:'Black, pinstripes and authentic logos'}},
-    {year:2024, series:'Exotic Envy', model:`'71 Porsche 911`, code:'HKC81', color:{pt:'Preto', en:'Black'}},
-    {year:2024, series:'World Tour', model:'Alfa Romeo GTV6 3.0', code:'HRV83', color:{pt:'Preto', en:'Black'}},
-    {year:2024, series:'Terra Trek', model:'Datsun King Cab Baja Custom', code:'HRV92', color:{pt:'Preto', en:'Black'}},
-    {year:2024, series:'Modern Classics', model:'Nissan Skyline GT-R (R32) Pandem', code:'HRW01', color:{pt:'Preto', en:'Black'}},
-    {year:2024, series:'Race Day', model:`"Roxy" Porsche 911 GT3 R (992)`, code:'HRV96', color:{pt:'Rosa', en:'Pink'}},
-
-    {year:2023, series:'Speed Machines', model:'Porsche 911 GT3', code:'HKC45', color:{pt:'Preto fosco, listras cinza, "60/Porsche"', en:'Jet black, gray stripes, "60/Porsche"'}},
-    {year:2023, series:'Spettacolare', model:'Lamborghini Countach LPI 800-4', code:'HKC51', color:{pt:'Preto', en:'Black'}},
-    {year:2023, series:'Canyon Warriors', model:'Mercedes-Benz 500 E', code:'HKC57', color:{pt:'Preto', en:'Black'}},
-    {year:2023, series:'Race Day', model:'Porsche 935', code:'HKC63', color:{pt:'Preto', en:'Black'}},
-    {year:2023, series:'Modern Classics', model:`'98 Toyota Altezza`, code:'HKC69', color:{pt:'Preto', en:'Black'}},
-    {year:2023, series:'HW Off Road', model:'2005 Toyota Land Cruiser Prado', code:'HKC75', color:{pt:'Preto, listras cinza', en:'Black, gray stripes'}},
-
-    {year:2022, series:'Deutschland Design', model:`'12 Mercedes-Benz C63 AMG Coupe Black Series`, code:'HCJ97', color:{pt:'Preto, "6.3" e "AMG"', en:'Black, "6.3" and "AMG"'}},
-    {year:2022, series:'Dragstripe Demons', model:`'33 Willys`, code:'HCK25', color:{pt:'Preto, patina "rust bucket"', en:'Black, "rust bucket" patina'}},
-    {year:2022, series:'AutoStrasse', model:`'73 Volvo 142 GL`, code:'HCK20', color:{pt:'Preto, acentos prateados', en:'Black, silver accents'}},
-    {year:2022, series:'American Scene', model:'Corvette C8.R', code:'HCK06', color:{pt:'Preto, listras brancas, "C8.R"', en:'Black, white stripes, "C8.R"'}},
-    {year:2022, series:`Jay Leno's Garage`, model:'Lamborghini Countach LP 5000 QV', code:'HCJ93', color:{pt:'Preto', en:'Black'}},
-    {year:2022, series:'Exotic Envy', model:'Lamborghini Essenza SCV12', code:'HCJ93', color:{pt:'Preto, "63" vermelho', en:'Black, red "63"'}},
-    {year:2022, series:'Mountain Drifters', model:'LB-ER34 Super Silhouette Nissan Skyline', code:'HCK01', color:{pt:'Preto, logos Liberty Walk, gaiola vermelha', en:'Black, Liberty Walk logos, red roll cage'}},
-    {year:2022, series:'Roni Run', model:'Mazda RX7 FC Pandem', code:'HCK15', color:{pt:'Preto, logos GReddy/Pandem', en:'Black, GReddy/Pandem logos'}}
-  ];
-
-  // HCJ93 aparece pra dois modelos diferentes na fonte original — sinalizar
-  CHASE_DB.forEach(item=>{
-    if(item.code === 'HCJ93'){
-      item.note = {pt:'Código duplicado na fonte p/ 2 modelos — conferir', en:'Code duplicated in source for 2 models — verify'};
-    }
-  });
-
-  let dbYearFilter = 'all';
-
-  function buildYearPills(){
-    const years = ['all', ...Array.from(new Set(CHASE_DB.map(i=>i.year))).sort((a,b)=>b-a)];
-    const wrap = document.getElementById('dbYearPills');
-    wrap.innerHTML = '';
-    years.forEach(y=>{
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'db-pill' + (dbYearFilter === y ? ' active' : '');
-      btn.textContent = y === 'all' ? (CURRENT_LANG === 'pt' ? 'Todos' : 'All') : y;
-      btn.onclick = ()=>{ dbYearFilter = y; renderDatabase(); };
-      wrap.appendChild(btn);
-    });
-  }
-
-  function renderDatabase(){
-    buildYearPills();
-    const searchEl = document.getElementById('dbSearch');
-    const q = (searchEl.value || '').toLowerCase();
-    const body = document.getElementById('dbBody');
-    const count = document.getElementById('dbCount');
-
-    let rows = CHASE_DB.filter(i=>{
-      const matchesYear = dbYearFilter === 'all' || i.year === dbYearFilter;
-      const haystack = (i.series+' '+i.model+' '+i.code+' '+i.year).toLowerCase();
-      return matchesYear && haystack.includes(q);
-    });
-    rows.sort((a,b)=> b.year - a.year);
-
-    body.innerHTML = '';
-    if(rows.length === 0){
-      body.innerHTML = '<tr><td colspan="5"><div class="db-empty">'+(CURRENT_LANG==='pt' ? 'Nenhum resultado.' : 'No results.')+'</div></td></tr>';
-    } else {
-      rows.forEach(i=>{
-        const tr = document.createElement('tr');
-        const noteHtml = i.note ? '<br><span class="db-note">⚠ '+i.note[CURRENT_LANG]+'</span>' : '';
-        tr.innerHTML =
-          '<td>'+i.year+'</td>'+
-          '<td>'+i.series+'</td>'+
-          '<td>'+i.model+'</td>'+
-          '<td><span class="db-code">'+i.code+'</span>'+noteHtml+'</td>'+
-          '<td>'+i.color[CURRENT_LANG]+'</td>';
-        body.appendChild(tr);
+  function speak(text){
+    try{
+      if(!('speechSynthesis' in window)) return Promise.resolve();
+      return new Promise((resolve)=>{
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US'; u.rate = 0.95;
+        u.onend = ()=>resolve();
+        u.onerror = ()=>resolve();
+        speechSynthesis.speak(u);
+        setTimeout(resolve, 1600); // fallback if onend never fires
       });
+    }catch(e){ return Promise.resolve(); }
+  }
+
+  const digitsEl = document.getElementById('digits');
+  const statusEl = document.getElementById('status');
+  const startBtn = document.getElementById('startBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const durButtons = Array.from(document.querySelectorAll('.dur-btn'));
+
+  let selectedMs = 0;
+  durButtons.forEach(b=>b.addEventListener('click', ()=>{
+    if(phase!=='idle') return;
+    durButtons.forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    selectedMs = Number(b.dataset.ms);
+  }));
+
+  let phase = 'idle'; // idle | countdown | startonly | match | ended
+  let matchStart = 0;
+  let warned = false;
+  let ended = false;
+  let intervalId = null;
+
+  function setUIRunning(running){
+    durButtons.forEach(b=>b.disabled = running);
+    startBtn.classList.toggle('hidden', running);
+    cancelBtn.classList.toggle('hidden', !running);
+  }
+
+  function fmt(ms){
+    const s = Math.max(0, Math.ceil(ms/1000));
+    const m = Math.floor(s/60);
+    const r = s%60;
+    return m + ':' + String(r).padStart(2,'0');
+  }
+
+  function tick(){
+    const now = Date.now();
+    if(phase==='countdown'){
+      const t = startAudio.currentTime;
+      const k = CUES.beeps.filter(b => t >= b).length;
+      digitsEl.textContent = String(10 - k);
+      digitsEl.className = 'digits count';
+      statusEl.textContent = 'Contagem regressiva';
+      if(t >= CUES.horn || startAudio.ended){
+        if(selectedMs > 0){
+          phase = 'match'; warned = false; ended = false;
+          matchStart = now - Math.max(0, t - CUES.horn) * 1000;
+          statusEl.textContent = 'Em jogo';
+        } else {
+          phase = 'startonly';
+          statusEl.textContent = 'Em jogo — sem cronômetro';
+          digitsEl.textContent = 'GO';
+          digitsEl.className = 'digits';
+          cancelBtn.textContent = 'Nova rodada';
+        }
+      }
+      return;
     }
-    count.textContent = rows.length + (CURRENT_LANG==='pt' ? ' de '+CHASE_DB.length+' chases catalogados' : ' of '+CHASE_DB.length+' catalogued chases');
+    if(phase==='match'){
+      const remaining = selectedMs - (now - matchStart);
+      if(remaining <= 0){
+        digitsEl.textContent = '0:00';
+        digitsEl.className = 'digits done';
+        if(!ended){ ended = true; buzzer(); statusEl.textContent = 'Tempo esgotado'; cancelBtn.textContent = 'Nova rodada'; }
+        phase = 'ended';
+        return;
+      }
+      digitsEl.textContent = fmt(remaining);
+      if(remaining <= 60000){
+        digitsEl.className = 'digits warn';
+        statusEl.textContent = 'Último minuto';
+        if(!warned){ warned = true; warnTone(); speak('One minute'); }
+      } else {
+        digitsEl.className = 'digits';
+      }
+    }
   }
 
-  function setLang(lang){
-    CURRENT_LANG = lang;
-    document.body.classList.toggle('lang-en', lang === 'en');
-    document.documentElement.lang = lang === 'en' ? 'en' : 'pt-BR';
-    document.querySelectorAll('.lang-btn').forEach(b=> b.classList.toggle('active', b.dataset.lang === lang));
-    document.title = lang === 'en'
-      ? 'Inspection Guide — Hot Wheels Premium Chases'
-      : 'Guia de Inspeção — Chases Premium Hot Wheels';
-    document.getElementById('dbSearch').placeholder = lang === 'en'
-      ? 'Search model, series, or code…'
-      : 'Buscar modelo, série ou código…';
-    decode();
-    renderDatabase();
+  function reset(){
+    clearInterval(intervalId); intervalId = null;
+    try{ speechSynthesis.cancel(); }catch(e){}
+    startAudio.pause(); startAudio.currentTime = 0;
+    cancelBtn.textContent = 'Cancelar';
+    phase = 'idle';
+    digitsEl.textContent = 'PRONTO';
+    digitsEl.className = 'digits';
+    statusEl.textContent = 'Pronto para iniciar';
+    setUIRunning(false);
   }
 
-  renderDatabase();
+  startBtn.addEventListener('click', ()=>{
+    if(phase!=='idle') return;
+    const ctx = ac(); if(ctx.resume) ctx.resume();
+    try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); }catch(e){} // libera a fala no iOS
+    setUIRunning(true);
+    phase = 'countdown';
+    statusEl.textContent = 'Prepare-se';
+    digitsEl.textContent = '10';
+    digitsEl.className = 'digits count';
+    startAudio.currentTime = 0;
+    startAudio.play().catch(()=>{ reset(); statusEl.textContent = 'Não consegui tocar start.mp3'; });
+    intervalId = setInterval(tick, 50);
+  });
+
+  cancelBtn.addEventListener('click', reset);
 </script>
-
 </body>
 </html>
